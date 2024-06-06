@@ -29,13 +29,24 @@ export default function PropertyList() {
 
 const[search,setSearch]=useState('')
 const[commercial,setCommercial]=useState('')
+const[sort,setSort]=useState('')
 
-const filteredData = list &&list.filter(item => 
-  (item.address.trim().toLowerCase().includes(search.trim().toLowerCase()) ||
-  item.propertyType.trim().toLowerCase().startsWith(search.trim().toLowerCase()) )&&
-  (commercial === '' || item.isCommercial === (commercial === 'true'))
-
-);
+const filteredData = list && list
+  .filter(item =>
+    (item.address.trim().toLowerCase().includes(search.trim().toLowerCase()) ||
+      item.propertyType.trim().toLowerCase().startsWith(search.trim().toLowerCase())) &&
+    (commercial === '' || item.isCommercial === (commercial === 'true'))
+  )
+  .sort((a, b) => {
+    if (sort === 'priceLowToHigh') {
+      return a.price - b.price;
+    } else if (sort === 'priceHighToLow') {
+      return b.price - a.price;
+    } else {
+      // Default sorting behavior
+      return 0;
+    }
+  });
 
   return (
     <div className='container-fluid list'>
@@ -63,6 +74,17 @@ const filteredData = list &&list.filter(item =>
           <option value="">Filter Commercial/Non-Commercial</option>
           <option value="true">Commercial</option>
           <option value="false">Non-Commercial</option>
+        </select>
+              </div>
+              <div className="col-md-auto col-sm-12 text-end search m-1">
+              <select
+          value={sort}
+          onChange={(e) => setSort(e.target.value)}
+          className="filter-select"
+        >
+          <option value="">Sort by</option>
+          <option value="priceLowToHigh">Low Price</option>
+          <option value="priceHighToLow">High Price</option>
         </select>
               </div>
             </div>
